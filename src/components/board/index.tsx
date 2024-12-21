@@ -8,10 +8,10 @@ const Board = () => {
   const { direction, ...rest } = useSwipe();
 
   const [arr, setArr] = useState([
-    [0, 2048, 64, 128],
-    [0, 2, 32, 256],
-    [0, 2, 16, 512],
-    [0, 4, 8, 1024],
+    [0, 0, 0, 0],
+    [0, 2, 0, 0],
+    [0, 0, 4, 0],
+    [0, 0, 0, 0],
   ]);
 
   useEffect(() => {
