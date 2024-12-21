@@ -15,9 +15,9 @@ export default function Home() {
       </div>
       <Board />
 
-      <button className="mt-4 w-full bg-blue-500 text-white py-2 ">
+      {/* <button className="mt-4 w-full bg-blue-500 text-white py-2 ">
         Restart
-      </button>
+      </button> */}
     </>
   );
 }

@@ -2,15 +2,16 @@
 import useSwipe from "@/components/board/logics/hooks";
 import { useEffect, useState } from "react";
 import swipeArray from "./logics/swipe";
+import numberColors from "./logics/colors";
 
 const Board = () => {
   const { direction, ...rest } = useSwipe();
 
   const [arr, setArr] = useState([
-    [0, 2, 0, 2],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
+    [0, 2048, 64, 128],
+    [0, 2, 32, 256],
+    [0, 2, 16, 512],
+    [0, 4, 8, 1024],
   ]);
 
   useEffect(() => {
@@ -21,15 +22,16 @@ const Board = () => {
   }, [direction]);
 
   return (
-    <div className="grid select-none" {...rest}>
+    <div className="grid select-none p-2 bg-[#C65D3B] rounded-[4px]" {...rest}>
       {arr.map((array, index) => (
-        <div className="grid grid-cols-4" key={index}>
-          {array.map((item, index) => (
+        <div className="grid grid-cols-4 p-1 gap-2" key={index}>
+          {array.map((number, index) => (
             <div
-              className="bg-gray-300 h-16 flex items-center justify-center"
+              className="flex items-center justify-center rounded-[4px] font-bold"
+              style={{ aspectRatio: 1, backgroundColor: numberColors(number) }}
               key={index}
             >
-              {item}
+              {!!number && number}
             </div>
           ))}
         </div>

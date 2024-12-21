@@ -30,9 +30,14 @@ function mergeAndTransform(arr: number[]) {
 
   const [first, second, third, fourth] = arr;
 
-  if (first === third && !second) return [first + third, fourth, 0, 0];
-  if (first === fourth && !second && !third) return [first + fourth, 0, 0, 0];
-  if (second === fourth && !first && !third) return [second + fourth, 0, 0, 0];
+  if (first !== second && second === fourth && second && !third)
+    return [first, second + fourth, 0, 0];
+
+  if (first === third && !second && first) return [first + third, fourth, 0, 0];
+  if (first === fourth && !second && !third && first)
+    return [first + fourth, 0, 0, 0];
+  if (second === fourth && !first && !third && second)
+    return [second + fourth, 0, 0, 0];
 
   return result;
 }
@@ -90,6 +95,8 @@ const swipeArray = (array: number[][], direction: Direction) => {
 
     return clonedResult;
   })();
+
+  if (JSON.stringify(result) === JSON.stringify(array)) return array;
 
   return changeRandomZero(result);
 };
