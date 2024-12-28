@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +31,7 @@ export default async function RootLayout({
         style={{ overflow: "hidden" }}
       >
         <div className="flex items-center justify-center min-h-screen">
-          {children}
+          <Suspense fallback={<div>loading...</div>}>{children}</Suspense>
         </div>
       </body>
     </html>
