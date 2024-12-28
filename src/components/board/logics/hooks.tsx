@@ -1,5 +1,6 @@
 "use client";
-import { TouchEvent, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { TouchEvent } from "react";
 import { Direction } from "./swipe/interface";
 
 interface Event {
@@ -7,10 +8,25 @@ interface Event {
   clientY: number;
 }
 
-const useSwipe = () => {
-  let startX: number, startY: number, endX: number, endY: number;
+export const useReplaceParams = () => {
+  const { replace: replaceRouter } = useRouter();
 
-  const [direction, setDirection] = useState<Direction>("");
+  const replace = (string?: string) =>
+    replaceRouter(
+      `?score=${localStorage.getItem("score") || 0}&highScore=${
+        localStorage.getItem("highScore") || 0
+      }${string}`
+    );
+
+  return replace;
+};
+
+const useSwipe = () => {
+  const replace = useReplaceParams();
+  const direction = useSearchParams().get("direction") as Direction;
+  // const is1024 = useSearchParams().get("is1024") as booleanQuery;
+
+  let startX: number, startY: number, endX: number, endY: number;
 
   function onTouchStart(event: TouchEvent<HTMLDivElement>) {
     const touch = event.touches[0];
@@ -31,8 +47,6 @@ const useSwipe = () => {
   }
 
   function onSwipe() {
-    setDirection("");
-
     const deltaX = endX - startX;
     const deltaY = endY - startY;
 
@@ -49,8 +63,14 @@ const useSwipe = () => {
       return "up";
     })();
 
-    setTimeout(() => setDirection(text), 1);
+    const queryAnimation = `&animation=${text}`;
+    const query = `&direction=${text}`;
+
+    replace(queryAnimation);
+
+    setTimeout(() => replace(query), 200);
   }
+
   const onMouseDown = (e: Event) => {
     startX = e.clientX;
     startY = e.clientY;

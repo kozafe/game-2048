@@ -2,9 +2,25 @@ import { cloneDeep } from "lodash";
 import { Direction } from "./interface";
 import { reverseTranspose, transposeArray } from "./tools";
 
-function mergeAndTransform(arr: number[]) {
+function mergeAndTransform(arr: number[], isCount?: boolean) {
+  // merge direction: left
+
   // Step 1: Create a new array to hold the results
   const result: number[] = [0, 0, 0, 0];
+
+  const score = Number(localStorage.getItem("score") || 0);
+  const highScore = Number(localStorage.getItem("highScore") || 0);
+
+  const setScore = (number: number) => {
+    if (!isCount) return;
+
+    const result = score + number;
+    localStorage.setItem("score", `${result}`);
+
+    if (score >= highScore) {
+      localStorage.setItem("highScore", `${result}`);
+    }
+  };
 
   // Step 2: Initialize a pointer for the result array
   let index = 0;
@@ -16,6 +32,9 @@ function mergeAndTransform(arr: number[]) {
       // Check if the next element is the same
       if (i < arr.length - 1 && arr[i] === arr[i + 1]) {
         // Merge the two elements
+
+        setScore(arr[i] * 2);
+
         result[index] = arr[i] * 2;
         index++;
         // Skip the next element since it's merged
@@ -30,14 +49,32 @@ function mergeAndTransform(arr: number[]) {
 
   const [first, second, third, fourth] = arr;
 
-  if (first !== second && second === fourth && second && !third)
-    return [first, second + fourth, 0, 0];
-
-  if (first === third && !second && first) return [first + third, fourth, 0, 0];
-  if (first === fourth && !second && !third && first)
-    return [first + fourth, 0, 0, 0];
-  if (second === fourth && !first && !third && second)
+  // 0202
+  if (!first && !third && second === fourth) {
+    setScore(second + fourth);
     return [second + fourth, 0, 0, 0];
+  }
+
+  if (first !== second && second === fourth && second && !third) {
+    setScore(second + fourth);
+    return [first, second + fourth, 0, 0];
+  }
+
+  if (first === third && !second && first) {
+    setScore(third + first);
+
+    return [first + third, fourth, 0, 0];
+  }
+  if (first === fourth && !second && !third && first) {
+    setScore(fourth + first);
+
+    return [first + fourth, 0, 0, 0];
+  }
+  if (second === fourth && !first && !third && second) {
+    setScore(fourth + second);
+
+    return [second + fourth, 0, 0, 0];
+  }
 
   return result;
 }
@@ -76,7 +113,11 @@ function changeRandomZero(arr: number[][]) {
   return updatedArray;
 }
 
-const swipeArray = (array: number[][], direction: Direction) => {
+const swipeArray = (
+  array: number[][],
+  direction?: Direction,
+  addRandomNumber?: boolean
+) => {
   const arr = (() => {
     const clonedArr = cloneDeep(array);
     if (direction === "up") return transposeArray(clonedArr);
@@ -87,7 +128,10 @@ const swipeArray = (array: number[][], direction: Direction) => {
   })();
 
   const result = (() => {
-    const clonedResult = cloneDeep(arr).map(mergeAndTransform);
+    if (!direction) return array;
+    const clonedResult = cloneDeep(arr).map((arr) =>
+      mergeAndTransform(arr, addRandomNumber)
+    );
     if (direction === "up") return reverseTranspose(clonedResult);
     if (direction === "down") return reverseTranspose(clonedResult).reverse();
     if (direction === "right")
@@ -97,6 +141,8 @@ const swipeArray = (array: number[][], direction: Direction) => {
   })();
 
   if (JSON.stringify(result) === JSON.stringify(array)) return array;
+
+  if (!addRandomNumber) return result;
 
   return changeRandomZero(result);
 };
