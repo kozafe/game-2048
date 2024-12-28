@@ -73,7 +73,7 @@ const Board = () => {
                   backgroundColor: numberColors(number),
                   position: "relative",
                   transform,
-                  transition: "all 0.15s ease-out",
+                  transition: "all 0.09s ease-out",
                 }}
               >
                 {!!number && number}

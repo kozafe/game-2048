@@ -68,7 +68,7 @@ const useSwipe = () => {
 
     replace(queryAnimation);
 
-    setTimeout(() => replace(query), 200);
+    setTimeout(() => replace(query), 100);
   }
 
   const onMouseDown = (e: Event) => {
